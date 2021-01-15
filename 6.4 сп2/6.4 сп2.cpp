@@ -13,41 +13,45 @@ void Create(int* a, const int size, int i)
         Create(a, size, i + 1);
 }
 
-void replace(int* a, int num)
+void replace(int* a, int* b, int num)
 {
-    for (int i = 1; i < num; ++i)
+    int k = 0; int j = 0;
+
+    for (int i = 0; i < num; i++)
     {
-        for (int r = 0; r < num - i; r++)
+        if (a[i] < 0)
         {
-            if (a[r] < a[r + 1])
-            {
-                // obmin
-                int temp = a[r];
-                a[r] = a[r + 1];
-                a[r + 1] = temp;
-            }
+            b[num - 1 - k] = a[i];
+            k++;
+        }
+        else
+        {
+            b[j] = a[i];
+            j++;
         }
     }
 }
 
-void Print(int* a, const int num, int i, int& dob, int& sum)
+
+void Print(int* a, int* b, const int num, int i, int& dob, int& sum)
 {
     if (i == 0)
         cout << "a[" << num << "]={ ";
     cout << setw(4) << a[i] << ", ";
     if (i < num - 1)
-        Print(a, num, i + 1, dob, sum);
+        Print(a, b, num, i + 1, dob, sum);
     else
         cout << " }" << '\n' << "dobutok = " << dob << '\n' << "suma [1, n-1] = " << sum << endl;
 }
-void printr(int* a, int num, int r)
+
+void printr(int* a, int* b, int num, int i)
 {
-    replace(a, num);
-    if (r == 0)
-         cout << "replaced a[" << num << "] ={ ";
-    cout << setw(4) << a[r] << ", ";
-    if (r < num - 1)
-        printr(a, num, r + 1);
+    replace(a, b, num);
+    if (i == 0)
+        cout << "replaced a[" << num << "] ={ ";
+    cout << setw(4) << b[i] << ", ";
+    if (i < num - 1)
+        printr(a, b, num, i + 1);
     else cout << "}" << endl;
 }
 
@@ -61,32 +65,48 @@ int dobutok(int* a, const int num, int i, int& dob)
         return dob;
 }
 
-int suma(int* a, const int num, int i, int& sum)
+int sum(int* a, int num, int& suma)
 {
-    if (i > 0)
-        sum += a[i];
-    if (i < num - 2)
-        return suma(a, num, i + 1, sum);
-    if (i = num -1)
-        return sum;
+    suma = 0;
+    int n, i, k = 0, p = 0;
+    for (i = 0; i < num; i++)
+    {
+        if (a[i] == 0)
+        {
+            k = i;
+            break;
+        }
+    }
+    for (i = num - 1; i >= 0; i--)
+        if (a[i] == 0)
+        {
+            p = i;
+            break;
+        }
+    for (i = k; i <= p; i++)
+    {
+        suma = suma + a[i];
+    }
+
+    return suma;
 }
+
 
 int main()
 {
     srand((unsigned)time(NULL));
-
     int num;
+    int j = 0;
     cout << "array size: "; cin >> num;
     int* a = new int[num];
+    int* b = new int[j];
     int dob = 1;
-    int sum = 0;
+    int suma = 0;
     Create(a, num, 0);
     dobutok(a, num, 0, dob);
-    suma(a, num, 0, sum);
-    Print(a, num, 0, dob, sum);
-    printr(a, num, 0);
+    sum(a, num, suma);
+    Print(a, b, num, 0, dob, suma);
+    printr(a, b, num, 0);
 
     return 0;
 }
-
-
